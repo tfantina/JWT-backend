@@ -2,15 +2,15 @@
 
 Rails.application.routes.draw do
   get 'home' => 'home#index'
-  # devise_for :users, controllers: { registrations: 'registrations' }
   namespace :api do
     namespace :v1 do
       get 'post/index'
+      devise_for :user, only: []
 
-      devise_scope :user do
+      devise_scope :api_v1_user do
+        resources :sessions, only: %i[create destroy]
         resources :registrations, only: %i[new create]
       end
-      resources :sessions, only: %i[create destroy]
     end
   end
 end

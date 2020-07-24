@@ -310,21 +310,6 @@ Devise.setup do |config|
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
 
-
-
-  # config.jwt do |jwt|
-  #   jwt.secret = Rails.application.credentials.dig(:devise_jwt_secret_key)
-  #   jwt.dispatch_requests = [
-  #     ['POST', %r{^/login$}]
-  #   ]
-  #   jwt.revocation_requests = [
-  #     ['DELETE', %r{^/logout$}]
-  #   ]
-  #   jwt.expiration_time = 1.day.to_i
-  # end
-  #
-  # config.navigational_formats = []
-
   module Devise
     module Strategies
       class JWT < Base
@@ -336,14 +321,12 @@ Devise.setup do |config|
           token = request.headers.fetch('Authorization', '').split('').last
           payload = JsonWebToken.decode(token)
           success! User.find(payload['sub'])
-
-          rescue ::JWT::ExpiredSignature
+        rescue ::JWT::ExpiredSignature
           fail! 'Auth token has expired'
-          rescue ::JWT::DecodeError
+        rescue ::JWT::DecodeError
           fail! 'Auth token is invald'
         end
       end
     end
   end
-
 end
