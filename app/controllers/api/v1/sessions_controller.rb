@@ -10,6 +10,7 @@ class Api::V1::SessionsController < Devise::SessionsController
     user = User.find_for_database_authentication(email: params[:email])
 
     if user&.valid_password?(params[:password])
+      puts payload(user)
       render json: payload(user)
     else
       render json: { errors: ['Invalid Username/Password'] }, status: :unauthorized
