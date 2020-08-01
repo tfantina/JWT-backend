@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
 class Api::V1::RegistrationsController < Devise::RegistrationsController
+  include Api::V1::Concerns::Error
   skip_before_action :verify_authenticity_token
   respond_to :json
 
   def create
     @user = User.new(sign_up_params)
     if @user.save
-      render json: @user
+      render json: UserSerializer.new(@user).serialized_json
     else
-      render json: { errors: @user.errors }
+      render_error(@user, :unprocessable_entity)
+
     end
   end
 

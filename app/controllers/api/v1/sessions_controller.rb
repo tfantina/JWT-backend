@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
 class Api::V1::SessionsController < Devise::SessionsController
+  include Api::V1::Concerns::Error
   skip_before_action :verify_authenticity_token, only: [:create]
   respond_to :json
 
   def destroy; end
 
   def create
-    user = User.find_for_database_authentication(email: params[:email])
+    @user = User.find_for_database_authentication(email: params[:email])
 
-    if user&.valid_password?(params[:password])
-      render json: payload(user)
+    if @user&.valid_password?(params[:password])
+      render json: payload(@user)
     else
-      render json: { errors: ['Invalid Username/Password'] }, status: :unauthorized
+      render json: { errors: ['Invalid Username/Password'] },
+             status: :unprocessable_entity
     end
   end
 

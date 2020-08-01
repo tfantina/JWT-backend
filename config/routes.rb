@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   get 'home' => 'home#index'
-  namespace :api do
+  namespace :api, defaults: { format: :json } do
     namespace :v1 do
       get 'post/index'
       devise_for :user, only: []
