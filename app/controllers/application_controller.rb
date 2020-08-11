@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def authenticate_request!
-    unless user_id_in_token?
+    unless user_id_in_valid_token?
       render json: { errors: ['Not Authenticated'] }, status: :unauthorized
       return
     end
@@ -21,15 +21,18 @@ class ApplicationController < ActionController::Base
   def http_token
     @http_token ||= if request.headers['Authorization'].present?
                       request.headers['Authorization'].split(' ').last
-    end
+                    end
   end
 
   def auth_token
-    puts "#{JsonWebToken.decode(http_token)} token time"
     @auth_token ||= JsonWebToken.decode(http_token)
   end
 
-  def user_id_in_token?
-    http_token && auth_token && auth_token[:user_id].to_i
+  def token_blocked?
+    BlockedToken.exists?(jti: @auth_token[:jti])
+  end
+
+  def user_id_in_valid_token?
+    http_token && auth_token && auth_token[:user_id].to_i && !token_blocked?
   end
 end

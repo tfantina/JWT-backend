@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 class Api::V1::PostController < ApiController
-  before_aciton :authenticate_user!
+  #  before_action :authenticate_user!
   def index
-    puts current_user.email
-    render json: { user: current_user.email, list: [1, 2, 3]}
+    render json: { user: current_user.email, list: [1, 2, 3] }
   end
 end

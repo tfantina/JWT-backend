@@ -14,4 +14,12 @@ class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
   # Add more helper methods to be used by all tests here...
+
+  def check_for_value(response, dig_val)
+    response = JSON.parse(response.body)
+    dig_val.each do |dig|
+      response = response.dig(dig)
+    end
+    response
+  end
 end

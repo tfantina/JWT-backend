@@ -15,8 +15,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     post '/api/v1/registrations', params: user_params
 
     assert_response :success
-
-    assert JSON.parse(response.body).dig('data', 'attributes', 'email') == user_params[:email]
+    assert check_for_value(response, %w[data attributes email]) == user_params[:email]
     assert User.count == total_users + 1
   end
 
@@ -31,9 +30,9 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     post '/api/v1/registrations', params: user_params
 
     assert_response 422
-    assert JSON.parse(response.body)
-               .dig('data', 'attributes', 'errors', 'password')
-               .include? 'Passwords must be at least 8 characters long'
+
+    assert check_for_value(response, %w[data attributes errors password])
+      .include? 'Passwords must be at least 8 characters long'
   end
 
   test 'Returns error if there is no email' do
@@ -47,8 +46,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     post '/api/v1/registrations', params: user_params
 
     assert_response 422
-    assert JSON.parse(response.body)
-               .dig('data', 'attributes', 'errors', 'email')
-               .include? 'Email must be present.'
+    assert check_for_value(response, %w[data attributes errors email])
+      .include? 'Email must be present.'
   end
 end

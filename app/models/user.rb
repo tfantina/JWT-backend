@@ -10,4 +10,7 @@ class User < ApplicationRecord
   validates :password, presence: true
   validates :password, length: { minimum: 8,
                                  too_short: 'Passwords must be at least %{count} characters long' }
+
+  has_many :refresh_token, dependent: :delete_all
+  has_many :blocked_tokens, dependent: :delete_all
 end
