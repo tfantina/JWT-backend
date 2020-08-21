@@ -13,4 +13,5 @@ class User < ApplicationRecord
 
   has_many :refresh_token, dependent: :delete_all
   has_many :blocked_tokens, dependent: :delete_all
+  has_many :posts, dependent: :delete_all
 end
